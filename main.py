@@ -1,16 +1,24 @@
-# This is a sample Python script.
+import os
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from discord.ext import commands
 
+from secrets.secrets import discord_token
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+client = commands.Bot(command_prefix='.')
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+@client.event
+async def on_ready():
+    print('Bot is ready.')
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+@client.command()
+async def joke(ctx: commands.Context):
+    await ctx.send('https://euw.op.gg/summoner/userName=PinguTilt')
+
+
+for filename in os.listdir('./cogs'):
+    if filename.endswith('.py'):
+        client.load_extension(f'cogs.{filename[:-3]}')
+
+client.run(discord_token)
