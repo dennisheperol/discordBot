@@ -1,9 +1,14 @@
-create TABLE poop_balance (
+CREATE TABLE poop_balance (
     id BIGINT NOT NULL UNIQUE PRIMARY KEY,
     balance BIGINT NOT NULL
 );
 
-create TABLE scavenge_time (
+CREATE TABLE scavenge_time (
     id BIGINT NOT NULL UNIQUE PRIMARY KEY,
     time DOUBLE PRECISION NOT NULL
-)
+);
+
+CREATE TABLE poop_upgrade (
+    id BIGINT NOT NULL UNIQUE PRIMARY KEY,
+    chance INT NOT NULL
+);
