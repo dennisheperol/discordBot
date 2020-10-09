@@ -17,29 +17,33 @@ class Shop(commands.Cog):
 
     @commands.command()
     async def upgrade(self, ctx: commands.Context, to_upgrade=''):
-        chance = upgrade_repo.get_poop_upgrade(ctx.author.id)['chance']
+        poop_upgrade = upgrade_repo.get_poop_upgrade(ctx.author.id)
 
         if to_upgrade == 'chance':
-            await self._upgrade_chance(ctx, chance)
+            await self._upgrade_chance(ctx, poop_upgrade)
             return
 
-        chance_price = self._calculate_chance_price(chance)
+        chance_price = self._calculate_next_chance_price(poop_upgrade.chance)
         await ctx.send(f'.upgrade chance  ({chance_price} :poop:)')
 
-    async def _upgrade_chance(self, ctx, chance):
+    async def _upgrade_chance(self, ctx, poop_upgrade):
         poop_balance = poop_repo.get_poop_balance(ctx.author.id)
-        chance_price = self._calculate_chance_price(chance)
+        chance_price = self._calculate_next_chance_price(poop_upgrade.chance)
 
-        if poop_balance < chance_price:
-            await ctx.send(f'{ctx.author.mention}, you don''t have the necessary funds to upgrade.')
+        if poop_balance.balance < chance_price:
+            await ctx.send(f'{ctx.author.mention}, you don''t have the necessary :poop: to upgrade.')
             return
 
-        poop_repo.increase_poop_balance(ctx.author.id, -chance_price)
-        upgrade_repo.increase_poop_chance(ctx.author.id)
+        poop_balance.decrease_balance(chance_price)
+        poop_repo.set_poop_balance(poop_balance)
+
+        poop_upgrade.increase_chance()
+        upgrade_repo.set_poop_upgrade(poop_upgrade)
+
         await ctx.send(f'{ctx.author.mention}, you paid {chance_price} :poop: to increase your chances.')
 
     @staticmethod
-    def _calculate_chance_price(chance):
+    def _calculate_next_chance_price(chance):
         chance = chance + 1
         return math.ceil(chance * (math.log10(chance) ** 2))
 
