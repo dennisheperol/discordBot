@@ -1,10 +1,13 @@
 import os
 
 from discord.ext import commands
+import discord
 
 from secrets.secrets import discord_token
 
-client = commands.Bot(command_prefix='.')
+intents = discord.Intents.default()
+intents.members = True  # Subscribe to the privileged members intent.
+client = commands.Bot(command_prefix='.', intents=intents)
 
 
 @client.event

@@ -81,8 +81,10 @@ class Economy(commands.Cog):
     async def leaderboard(self, ctx: commands.Context):
         top_ten_balances = poop_repo.get_top_balances()
         send_back = ''
+        converter = commands.MemberConverter()
         for idx, poop_balance in enumerate(top_ten_balances):
-            send_back += f'**{idx + 1}.** <@!{poop_balance.id}>:\t{poop_balance.balance} :poop:\n'
+            member = await converter.convert(ctx, f'<@!{poop_balance.id}>')
+            send_back += f'{idx + 1}. {member.name}\t{poop_balance.balance} :poop:\n'
 
         await ctx.send(send_back)
 
